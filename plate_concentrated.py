@@ -118,22 +118,11 @@ if __name__ == '__main__':
 
     mesh = UnitSquareMesh(100, 100)
     V = FunctionSpace(mesh, 'Lagrange', 1)
-    u = Function(V)
 
-    # The numbering of the coordinates in the mesh and the DOFs do not
-    # necessarily coincide
-    # Source: http://fenicsproject.org/qa/3258/manually-setting-values-to-a-function?show=3259#a3259
-    # Workaround: http://fenicsproject.org/qa/2715/coordinates-u_nodal_values-using-numerical-source-function?show=2721#a2721
-    dof_coordinates = V.dofmap().tabulate_all_coordinates(mesh)
-    n = V.dim()
-    d = mesh.geometry().dim()
-    dof_coordinates.resize((n, d))
-    dof_x = dof_coordinates[:, 0]
-    dof_y = dof_coordinates[:, 1]
-    # Compute array values
-    vals = np.empty((101 * 101), dtype=float)
-    for ii in range(len(dof_x)):
-        vals[ii] = w(dof_x[ii], dof_y[ii])
-    u.vector()[:] = vals
+    class SquarePlate(Expression):
+        def eval(self, value, x):
+            value[0] = w(x[0], x[1])
+
+    u = interpolate(SquarePlate(), V)
 
     plot(u, interactive=True)
