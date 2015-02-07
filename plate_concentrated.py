@@ -80,8 +80,7 @@ class SquarePlateDisplacement(expression.Expression):
     to obtain good precision.
 
     """
-    def __init__(self, mesh, h, E, nu, P, xi, eta,
-                 num_points=11, max_m=64, max_n=64):
+    def __init__(self, mesh, h, E, nu, P, xi, eta, max_m=64, max_n=64):
         """Constructor.
 
         Parameters
@@ -98,8 +97,6 @@ class SquarePlateDisplacement(expression.Expression):
             Point load [N].
         xi, eta : float
             Coordinates of the load application point [m].
-        num_points : int, optional
-            Number of points for the intermediate meshgrid, defaults to 11.
         max_m, max_n : int, optional
             Maximum number of series terms to sum, default to 64.
 
@@ -108,21 +105,24 @@ class SquarePlateDisplacement(expression.Expression):
         assert isinstance(mesh, meshes.RectangleMesh)
         coords = mesh.coordinates()
         a, b = coords.max(axis=0) - coords.min(axis=0)
+        x, y = coords.T
+        num_x = len(np.unique(x))
+        num_y = len(np.unique(y))
+        assert num_x * num_y == mesh.num_vertices()
+
+        # Recreate domain
+        xx = x.reshape(num_x, num_y)
+        yy = y.reshape(num_x, num_y)
 
         # Material
         D = h**3 * E / (12 * (1 - nu**2))
-
-        # Create domain
-        x = np.linspace(0, a, num=num_points)
-        y = np.linspace(0, b, num=num_points)
-        xx, yy = np.meshgrid(x, y)
 
         # Compute displacement
         ww = np.zeros_like(xx)
         plate_displacement(xx, yy, ww, a, b, P, xi, eta, D, max_m, max_n)
 
         # Interpolate
-        self._w = interpolate.RectBivariateSpline(x, y, ww, kx=3, ky=3)
+        self._w = interpolate.RectBivariateSpline(xx[0], yy[:, 0], ww, kx=3, ky=3)
 
     def eval(self, value, x):
         value[0] = self._w(x[0], x[1])
