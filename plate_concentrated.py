@@ -19,7 +19,6 @@ TODO
 * Compute global and local error with respect to mixed biharmonic solution
 * Make plots of the above
 * Study number of points and interpolation degree
-* Check several alpha values from Timoshenko
 * Measure performance
 * Extend for other load conditions
 
@@ -76,8 +75,7 @@ class SquarePlateDisplacement(expression.Expression):
     -----
     The Navier solution is computed internally using jit-compiled functions
     for higher performance. The result is then interpolated using cubic
-    splines, so it is not mandatory to specify a big number of points
-    to obtain good precision.
+    splines.
 
     """
     def __init__(self, mesh, h, E, nu, P, xi, eta, max_m=64, max_n=64):
@@ -111,8 +109,9 @@ class SquarePlateDisplacement(expression.Expression):
         assert num_x * num_y == mesh.num_vertices()
 
         # Recreate domain
-        xx = x.reshape(num_x, num_y)
-        yy = y.reshape(num_x, num_y)
+        # x and y must be swapped, see https://github.com/scipy/scipy/issues/3164
+        xx = x.reshape(num_y, num_x)
+        yy = y.reshape(num_y, num_x)
 
         # Material
         D = h**3 * E / (12 * (1 - nu**2))
@@ -122,16 +121,16 @@ class SquarePlateDisplacement(expression.Expression):
         plate_displacement(xx, yy, ww, a, b, P, xi, eta, D, max_m, max_n)
 
         # Interpolate
-        self._w = interpolate.RectBivariateSpline(xx[0], yy[:, 0], ww, kx=3, ky=3)
+        self._w = interpolate.RectBivariateSpline(yy[:, 0], xx[0], ww, kx=3, ky=3)
 
     def eval(self, value, x):
-        value[0] = self._w(x[0], x[1])
+        value[0] = self._w(x[1], x[0])
 
 
 if __name__ == '__main__':
     # Plate geometry
     a = 1.0  # m
-    b = 1.0  # m
+    b = 2.0  # m
     h = 50e-3  # m
 
     # Material properties
@@ -147,7 +146,7 @@ if __name__ == '__main__':
     D = h**3 * E / (12 * (1 - nu**2))
 
     # Now comes the FEniCS magic
-    mesh = meshes.RectangleMesh(0, 0, a, b, 100, 100)
+    mesh = meshes.RectangleMesh(0, 0, a, b, 10, 20)
     V = functionspace.FunctionSpace(mesh, 'Lagrange', 1)
 
     u_expr = SquarePlateDisplacement(mesh, h, E, nu, P, xi, eta)
@@ -157,6 +156,5 @@ if __name__ == '__main__':
     w_max = np.abs(u.vector().array()).max()
     print "Maximum displacement = %14.12f mm" % (w_max * 1e3)
     print "alpha = %7.5f" % (w_max / (P * a**2 / D))
-    print "alpha * P a^2 / D = %6.4f mm" % (0.01160 * P * a**2 / D * 1e3)
 
     plotting.plot(u, interactive=True)
