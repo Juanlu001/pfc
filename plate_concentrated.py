@@ -18,7 +18,6 @@ TODO
 ----
 * Compute global and local error with respect to mixed biharmonic solution
 * Make plots of the above
-* Study number of points and interpolation degree
 * Measure performance
 * Extend for other load conditions
 
@@ -31,7 +30,7 @@ from scipy import interpolate
 
 from numba import njit
 
-from dolfin.cpp import mesh as meshes
+from dolfin import cpp
 from dolfin.functions import functionspace, expression
 from dolfin.fem import interpolation
 from dolfin.common import plotting
@@ -66,10 +65,11 @@ def plate_displacement(xx, yy, ww, a, b, P, xi, eta, D, max_m, max_n):
                                    / (pi**4 * D))
 
 
-class SquarePlateDisplacement(expression.Expression):
-    """Transverse displacement of a simply supported rectangular plate.
+class ExactRectangularPlate(expression.Expression):
+    """Exact solution of the transverse displacement of a rectangular plate.
 
-    This expression represents the exact Navier solution.
+    This expression represents the exact Navier solution of a simply supported
+    plate.
 
     Notes
     -----
@@ -100,7 +100,7 @@ class SquarePlateDisplacement(expression.Expression):
 
         """
         # Geometry
-        assert isinstance(mesh, meshes.RectangleMesh)
+        assert isinstance(mesh, cpp.mesh.RectangleMesh)
         coords = mesh.coordinates()
         a, b = coords.max(axis=0) - coords.min(axis=0)
         x, y = coords.T
@@ -146,10 +146,10 @@ if __name__ == '__main__':
     D = h**3 * E / (12 * (1 - nu**2))
 
     # Now comes the FEniCS magic
-    mesh = meshes.RectangleMesh(0, 0, a, b, 10, 20)
+    mesh = cpp.mesh.RectangleMesh(0, 0, a, b, 20, 20)
     V = functionspace.FunctionSpace(mesh, 'Lagrange', 1)
 
-    u_expr = SquarePlateDisplacement(mesh, h, E, nu, P, xi, eta)
+    u_expr = ExactRectangularPlate(mesh, h, E, nu, P, xi, eta)
     u = interpolation.interpolate(u_expr, V)
 
     # Print maximum displacement

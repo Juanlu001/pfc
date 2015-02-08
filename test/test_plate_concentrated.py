@@ -8,7 +8,7 @@ set_log_level(ERROR)
 
 from dolfin.cpp import mesh as meshes
 
-from plate_concentrated import SquarePlateDisplacement
+from plate_concentrated import ExactRectangularPlate
 
 
 def test_different_number_of_elements():
@@ -16,7 +16,7 @@ def test_different_number_of_elements():
     num_y = 20
     mesh = meshes.RectangleMesh(0, 0, 1.0, 1.0, num_x, num_y)
 
-    u_expr = SquarePlateDisplacement(mesh, 1.0, 1.0, 0.1, 1.0, 1.0, 1.0)
+    u_expr = ExactRectangularPlate(mesh, 1.0, 1.0, 0.1, 1.0, 1.0, 1.0)
 
 
 def test_timoshenko_factors():
@@ -37,7 +37,7 @@ def test_timoshenko_factors():
         num_y = int(num_x * b_over_a) + int(num_x * b_over_a) % 2
         mesh = meshes.RectangleMesh(0, 0, a, b, num_x, num_y)
 
-        u_expr = SquarePlateDisplacement(mesh, h, E, nu, P, a / 2, b / 2)
+        u_expr = ExactRectangularPlate(mesh, h, E, nu, P, a / 2, b / 2)
 
         w_max = u_expr(a / 2, b / 2)
         alpha = w_max * D / (P * a**2)
