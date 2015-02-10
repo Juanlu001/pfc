@@ -13,7 +13,7 @@ set_log_level(ERROR)
 from dolfin.cpp import mesh as meshes
 from dolfin.functions import functionspace
 
-from plate_concentrated import SquarePlateDisplacement
+from plate_concentrated import ExactRectangularPlate
 
 # Plate geometry
 a = 1.0  # m
@@ -38,8 +38,8 @@ err_array = np.zeros_like(max_w_array)
 for ii in range(num_iterations):
     max_num = 1 << ii
 
-    u_expr = SquarePlateDisplacement(mesh, h, E, nu, P, xi, eta,
-                                     max_m=max_num, max_n=max_num)
+    u_expr = ExactRectangularPlate(mesh, h, E, nu, P, xi, eta,
+                                   max_m=max_num, max_n=max_num)
 
     max_w_array[ii] = np.abs(u_expr(xi, eta))
     err_array[ii] = (max_w_array[ii] - max_w_array[ii - 1]) / (max_w_array[ii] or 1.0)
