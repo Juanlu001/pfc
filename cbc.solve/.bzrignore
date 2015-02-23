@@ -1,0 +1,11 @@
+*~
+*.bin
+*.orig
+*.pvd
+*.pyc
+*.pyo
+*.vtu
+cbc/twist/sandbox/*
+demo/twist/results*
+.DS_Store
+RE:.*\#.*\#$
