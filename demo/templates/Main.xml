@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<!--
+   #    ##   #  #   #
+  # #  #  #  #  #  # #                          #
+ ##### #  #  #  # #####  ##  ###  #  #  ## ###  ###
+ #   # #  #  #  # #   # #  # #  # #  # #   #  # #  #
+ #   # #  #  #  # #   # #  # #  # #  #   # #  # #  #
+ #   #  ## #  ##  #   #  ### ###   ### ##  ###  #  #
+                           # #             #
+                         ##  #             #
+
+Another QUAlity GPU-SPH, by CEHINAV.
+    http://canal.etsin.upm.es/
+Authors:
+    Jose Luis Cercos-Pita
+    Leo Miguel Gonzalez
+    Antonio Souto-Iglesias
+-->
+
+<sphInput>
+    <!-- In this file we will just include other XML definition files -->
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/OpenCLMain.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/id_inverse.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/domain.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/noLocalMem.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/variableTimeStep.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/timing.report.xml" />
+    <Include file="/home/juanlu/.miniconda3/envs/fenics27/share/aquagpusph/resources/Presets/performance.report.xml" />
+    <Include file="Settings.xml" />
+    <Include file="Time.xml" />
+    <Include file="SPH.xml" />
+    <Include file="Fluids.xml" />
+    <Include file="Sensors.xml" />
+    <Include file="Server.xml" />
+</sphInput>
