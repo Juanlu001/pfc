@@ -1,0 +1,3 @@
+[submodule "CBC.Solve"]
+	path = CBC.Solve
+	url = https://github.com/Juanlu001/CBC.Solve
