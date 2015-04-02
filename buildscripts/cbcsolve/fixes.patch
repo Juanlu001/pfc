@@ -1,0 +1,177 @@
+Only in cbc.solve/: .bzr
+diff -ru /tmp/cbc.solve/cbc/common/CBCSolver.py cbc.solve/cbc/common/CBCSolver.py
+--- /tmp/cbc.solve/cbc/common/CBCSolver.py	2015-04-02 18:54:42.800376901 +0200
++++ cbc.solve/cbc/common/CBCSolver.py	2015-04-02 19:03:40.187074826 +0200
+@@ -6,7 +6,7 @@
+ 
+ from time import time
+ from dolfin import info, error, Progress
+-from dolfin import compile_subdomains, interpolate
++from dolfin import CompiledSubDomain, interpolate
+ from dolfin import SubDomain, DirichletBC, Constant, Expression
+ from dolfin.cpp import GenericFunction
+ 
+@@ -75,7 +75,7 @@
+ 
+         # Case 0: boundary is a string
+         if isinstance(boundary, str):
+-            boundary = compile_subdomains(boundary)
++            boundary = CompiledSubDomain(boundary)
+             bc = DirichletBC(function_space, value, boundary)
+ 
+         # Case 1: boundary is a SubDomain
+diff -ru /tmp/cbc.solve/cbc/common/utils.py cbc.solve/cbc/common/utils.py
+--- /tmp/cbc.solve/cbc/common/utils.py	2015-04-02 18:54:42.800376901 +0200
++++ cbc.solve/cbc/common/utils.py	2015-04-02 19:03:40.187074826 +0200
+@@ -6,11 +6,13 @@
+ 
+ from math import ceil
+ from numpy import linspace
+-from dolfin import PeriodicBC, warning
++# from dolfin import PeriodicBC, warning
++from dolfin import warning
+ 
+ def is_periodic(bcs):
+     "Check if boundary conditions are periodic"
+-    return all(isinstance(bc, PeriodicBC) for bc in bcs)
++    # return all(isinstance(bc, PeriodicBC) for bc in bcs)
++    return all(False for bc in bcs)
+ 
+ def missing_function(function):
+     "Write an informative error message when function has not been overloaded"
+diff -ru /tmp/cbc.solve/cbc/twist/solution_algorithms.py cbc.solve/cbc/twist/solution_algorithms.py
+--- /tmp/cbc.solve/cbc/twist/solution_algorithms.py	2015-04-02 18:54:42.820376901 +0200
++++ cbc.solve/cbc/twist/solution_algorithms.py	2015-04-02 19:03:40.193741493 +0200
+@@ -71,12 +71,12 @@
+ 
+         neumann_boundaries = problem.neumann_boundaries()
+ 
+-        boundary = MeshFunction("uint", mesh, mesh.topology().dim() - 1)
++        boundary = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
+         boundary.set_all(len(neumann_boundaries) + 1)
+ 
+         dsb = ds[boundary]
+         for (i, neumann_boundary) in enumerate(neumann_boundaries):
+-            compiled_boundary = compile_subdomains(neumann_boundary)
++            compiled_boundary = CompiledSubDomain(neumann_boundary)
+             compiled_boundary.mark(boundary, i)
+             L = L - inner(neumann_conditions[i], v)*dsb(i)
+ 
+@@ -210,12 +210,12 @@
+ 
+         neumann_boundaries = problem.neumann_boundaries()
+ 
+-        boundary = MeshFunction("uint", mesh, mesh.topology().dim() - 1)
++        boundary = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
+         boundary.set_all(len(neumann_boundaries) + 1)
+ 
+         dsb = ds[boundary]
+         for (i, neumann_boundary) in enumerate(neumann_boundaries):
+-            compiled_boundary = compile_subdomains(neumann_boundary)
++            compiled_boundary = CompiledSubDomain(neumann_boundary)
+             compiled_boundary.mark(boundary, i)
+             L_accn = L_accn + inner(neumann_conditions[i], v)*dsb(i)
+ 
+@@ -267,14 +267,14 @@
+         neumann_conditions = problem.neumann_conditions()
+         neumann_boundaries = problem.neumann_boundaries()
+ 
+-        boundary = MeshFunction("uint", mesh, mesh.topology().dim() - 1)
++        boundary = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
+         boundary.set_all(len(neumann_boundaries) + 1)
+ 
+         dsb = ds[boundary]
+         for (i, neumann_boundary) in enumerate(neumann_boundaries):
+             info("Applying Neumann boundary condition.")
+             info(str(neumann_boundary))
+-            compiled_boundary = compile_subdomains(neumann_boundary)
++            compiled_boundary = CompiledSubDomain(neumann_boundary)
+             compiled_boundary.mark(boundary, i)
+             L = L - inner(neumann_conditions[i], v)*dsb(i)
+ 
+@@ -503,14 +503,14 @@
+         neumann_conditions = problem.neumann_conditions()
+         neumann_boundaries = problem.neumann_boundaries()
+ 
+-        boundary = MeshFunction("uint", mesh, mesh.topology().dim() - 1)
++        boundary = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
+         boundary.set_all(len(neumann_boundaries) + 1)
+ 
+         dsb = ds[boundary]
+         for (i, neumann_boundary) in enumerate(neumann_boundaries):
+             info("Applying Neumann boundary condition.")
+             info(str(neumann_boundary))
+-            compiled_boundary = compile_subdomains(neumann_boundary)
++            compiled_boundary = CompiledSubDomain(neumann_boundary)
+             compiled_boundary.mark(boundary, i)
+             L = L - k*inner(neumann_conditions[i], xi)*dsb(i)
+ 
+Only in cbc.solve/demo/twist: box.xml
+diff -ru /tmp/cbc.solve/demo/twist/fishy.py cbc.solve/demo/twist/fishy.py
+--- /tmp/cbc.solve/demo/twist/fishy.py	2015-04-02 18:54:42.840376903 +0200
++++ cbc.solve/demo/twist/fishy.py	2015-04-02 19:03:40.220408162 +0200
+@@ -11,10 +11,10 @@
+         return mesh
+ 
+     def end_time(self):
+-        return 10.0
++        return 5.0
+ 
+     def time_step(self):
+-        return 0.1
++        return 0.01
+ 
+     def is_dynamic(self):
+         return True
+Only in cbc.solve/demo/twist: flap3D_customf.py
+Only in cbc.solve/demo/twist: flap3D.py
+diff -ru /tmp/cbc.solve/demo/twist/flap.py cbc.solve/demo/twist/flap.py
+--- /tmp/cbc.solve/demo/twist/flap.py	2015-04-02 18:54:42.843710237 +0200
++++ cbc.solve/demo/twist/flap.py	2015-04-02 19:03:40.220408162 +0200
+@@ -8,23 +8,24 @@
+ 
+     def mesh(self):
+         n = 4
+-        return Rectangle(0, 0, 0.2, 0.5, n, 5*n/2)
++        return RectangleMesh(0, 0, 0.2, 0.5, n, 5*n/2)
+ 
+     def end_time(self):
+-        return 1.0
++        return 5.0
+ 
+     def time_step(self):
+-        return 0.2
++        return 0.01
+ 
+     def is_dynamic(self):
+         return True
+ 
+     def neumann_conditions(self):
+-        fluid_force = Expression(("magnitude*t", "0.0"), magnitude=1.5, t=0)
++        # fluid_force = Expression(("magnitude*t", "0.0"), magnitude=1.5, t=0)
++        fluid_force = Expression(("magnitude*min(t, 1.0)", "0.0"), magnitude=1.5, t=0)
+         return [fluid_force]
+ 
+     def neumann_boundaries(self):
+-        fluid_interface = "x[1] > 0.0 && x[0] == 0"
++        fluid_interface = "on_boundary && x[1] > 0.0"
+         return [fluid_interface]
+ 
+     def dirichlet_values(self):
+Only in cbc.solve/demo/twist: GMSH
+diff -ru /tmp/cbc.solve/demo/twist/gravity.py cbc.solve/demo/twist/gravity.py
+--- /tmp/cbc.solve/demo/twist/gravity.py	2015-04-02 18:54:42.843710237 +0200
++++ cbc.solve/demo/twist/gravity.py	2015-04-02 19:03:40.220408162 +0200
+@@ -14,7 +14,10 @@
+         return 1.0
+ 
+     def time_step(self):
+-        return 0.1
++        return 0.01
++
++    def is_dynamic(self):
++        return True
+ 
+     def time_stepping(self):
+         return "CG1"
+Only in /tmp/cbc.solve/: .git

@@ -1,0 +1,36 @@
+package:
+  name: cbcsolve
+  version: "0.1.dev0"
+
+source:
+  git_url: https://github.com/Juanlu001/CBC.Solve.git
+  git_tag: "master"
+
+  patches:
+    - fixes.patch
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python
+
+  run:
+    - python
+    - dolfin
+
+test:
+  # Python imports
+  imports:
+    - cbc
+    - cbc.twist
+
+about:
+  home: https://bitbucket.org/simula_cbc/cbcflow
+  license: GNU General Public License version 3 (GPLv3)
+  summary: 'collection of FEniCS/DOLFIN-based solvers developed primarily at the Center for Biomedical Computing'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
