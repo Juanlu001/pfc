@@ -3,15 +3,16 @@ from __future__ import division
 
 from numpy.testing import assert_almost_equal
 
-from fenics import set_log_level, ERROR
-set_log_level(ERROR)
-
+from dolfin import set_log_level, ERROR
 from dolfin.cpp import mesh as meshes
 
-from plate_concentrated import ExactRectangularPlate
+from lib.plate_concentrated import ExactRectangularPlate
+
+set_log_level(ERROR)
 
 
 def test_different_number_of_elements():
+    # TODO: Add assertion
     num_x = 10
     num_y = 20
     mesh = meshes.RectangleMesh(0, 0, 1.0, 1.0, num_x, num_y)
