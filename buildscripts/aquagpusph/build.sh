@@ -1,3 +1,6 @@
+export LIBRARY_PATH=$PREFIX/lib
+export INCLUDE_PATH=$PREFIX/include
+
 cmake \
     -DAQUAGPUSPH_3D=ON \
     -DCMAKE_BUILD_TYPE=Release \
