@@ -15,7 +15,9 @@ def test_different_number_of_elements():
     # TODO: Add assertion
     num_x = 10
     num_y = 20
-    mesh = meshes.RectangleMesh(0, 0, 1.0, 1.0, num_x, num_y)
+    p0 = meshes.Point(0, 0)
+    p1 = meshes.Point(1.0, 1.0)
+    mesh = meshes.RectangleMesh(p0, p1, num_x, num_y)
 
     u_expr = ExactRectangularPlate(mesh, 1.0, 1.0, 0.1, 1.0, 1.0, 1.0)
 
@@ -36,7 +38,9 @@ def test_timoshenko_factors():
         b = a * b_over_a
         num_x = 4
         num_y = int(num_x * b_over_a) + int(num_x * b_over_a) % 2
-        mesh = meshes.RectangleMesh(0, 0, a, b, num_x, num_y)
+        p0 = meshes.Point(0, 0)
+        p1 = meshes.Point(a, b)
+        mesh = meshes.RectangleMesh(p0, p1, num_x, num_y)
 
         u_expr = ExactRectangularPlate(mesh, h, E, nu, P, a / 2, b / 2)
 

@@ -2,6 +2,7 @@
 from __future__ import division
 
 from dolfin import cpp
+from dolfin.cpp.mesh import Point, RectangleMesh
 from dolfin.functions import function, functionspace, constant
 from dolfin.fem import bcs, interpolation, assembling, solving
 from dolfin.common import plotting
@@ -35,7 +36,7 @@ num_elem = 16
 boundary = lambda x, on_boundary: on_boundary
 
 # Initialize geometry
-mesh = cpp.mesh.RectangleMesh(0, 0, a, b, num_elem, num_elem)
+mesh = RectangleMesh(Point(0, 0), Point(a, b), num_elem, num_elem)
 
 # FEniCS solution
 CG_u = functionspace.FunctionSpace(mesh, 'CG', 2)
@@ -58,6 +59,7 @@ L = constant.Constant(f) * psi * dx
 point = cpp.mesh.Point(xi, eta)
 P_f = cpp.fem.PointSource(W.sub(0), point, P)
 
+print("Computing numerical solution...")
 A, b_v = assembling.assemble_system(lhs, L, bc)
 P_f.apply(b_v)
 

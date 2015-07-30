@@ -20,6 +20,15 @@ of fluid-structure interaction".
 * ``buildscripts``: Build scripts (conda recipes) to easily install the
   dependencies
 
+Requirements
+------------
+
+The code requires FEniCS 1.6.0 to run properly. Notice that it is not
+backwards compatible with previous versions. An ``environment.yml`` file is
+provided::
+
+  $ conda env create
+
 Demos
 -----
 
