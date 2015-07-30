@@ -1,10 +1,12 @@
+#!/bin/bash
+
 export LIBRARY_PATH=$PREFIX/lib
 export INCLUDE_PATH=$PREFIX/include
 
 cmake \
     -DAQUAGPUSPH_3D=ON \
     -DCMAKE_BUILD_TYPE=Release \
-    -DOPENCL_ROOT_DIR=/etc/OpenCL \
+    -DOPENCL_ROOT_DIR=/usr/lib/x86_64-linux-gnu \
     -DPYTHON_LIBRARIES=$LIBRARY_PATH \
     -DPYTHON_INCLUDE_DIRS=$INCLUDE_PATH \
     -DPYTHON_LIBRARY=$LIBRARY_PATH/libpython$PY_VER.so \
