@@ -1,6 +1,9 @@
 # coding: utf-8
+"""Server.
+
+"""
 import numpy as np
-import os.path as path
+from os import path
 import aquagpusph as aqua
 
 import zmq
@@ -23,7 +26,6 @@ def main():
     if n is None:
         n = 0
         nsensors = 0
-        iset = 0
         iset = aqua.get("iset")
         for ii in iset:
             if ii == 0:
@@ -39,6 +41,7 @@ def main():
         p = aqua.get("p")
         pos = aqua.get("r")
 
+        # TODO: Assemble NumPy array with proper size
         psensors = []
         possensors = []
         for ii in id_inverse[n:n + nsensors]:

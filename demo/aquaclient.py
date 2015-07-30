@@ -1,10 +1,18 @@
 # coding: utf-8
-#
-# Weather update client
-# Connects SUB socket to tcp://localhost:5556
-# Collects weather updates and finds avg temp in zipcode
-#
+"""Client program.
 
+How to collect data:
+
+1. Positions received as a list of points
+2. Interpolate function (probably unstructured grid, see scipy.interpolate.griddata)
+3. Evaluate function on points coming from the FEniCS mesh
+4. Restore the values onto the array of a FEniCS function in the proper order
+
+Hint: http://fenicsproject.org/qa/3975/interpolating-vector-function-from-python-code-to-fenics#a3976
+
+fe.vector()[V.dofmap().dofs()] = f(x, y)
+
+"""
 import sys
 import zmq
 

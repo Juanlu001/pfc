@@ -62,7 +62,7 @@ class FigureController(FigureCanvas):
         self.ax = (self.ax11, self.ax21, self.ax12, self.ax22)
         FigureCanvas.__init__(self, self.fig)
 
-        FNAME = path.join('/home/pepe/SPH/Code/aquagpusph.cmake/examples/3D/spheric_testcase2_dambreak', 'test_case_2_exp_data.dat')
+        FNAME = path.join('test_case_2_exp_data.dat')
         # For some reason the input file is bad sortened
         T,_,_,_,_,_,_,_,_,H3,H2,H1,H4, = self.readFile(FNAME)
         exp_t = T

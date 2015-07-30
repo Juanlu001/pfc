@@ -1,8 +1,11 @@
-About
-=====
+README
+======
 
 :Authors: Juan Luis Cano Rodríguez <jl.cano@alumnos.upm.es>,
     José Luis Cercós Pita <jl.cercos@upm.es>
+
+Overview
+--------
 
 This is the code for the final master project "Integration of a free
 finite element method structural solver with an SPH code for the study
@@ -16,3 +19,11 @@ of fluid-structure interaction".
 * ``report``: Code corresponding to the figures and results of the report
 * ``buildscripts``: Build scripts (conda recipes) to easily install the
   dependencies
+
+Demos
+-----
+
+To run the demos, use::
+
+  $ ./run.sh --run
+

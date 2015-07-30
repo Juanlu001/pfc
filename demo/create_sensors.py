@@ -15,8 +15,9 @@ mesh = cpp.mesh.RectangleMesh(0, -b/2, a, b/2, num_elem, num_elem)
 mesh.coordinates()
 V = functionspace.FunctionSpace(mesh, 'CG', 2)
 
-dofmap = V.dofmap()
-dof_coords = dofmap.tabulate_all_coordinates(mesh).reshape((-1, mesh.geometry().dim()))  # N x 3
+# http://fenicsproject.org/qa/3932/accessing-the-coordinates-of-a-degree-of-freedom
+dof_coords = V.dofmap().tabulate_all_coordinates(mesh).reshape(
+    (-1, mesh.geometry().dim()))  # N x 3
 
 
 if __name__ == '__main__':
