@@ -8,8 +8,8 @@ Overview
 --------
 
 .. image:: http://unmaintained.tech/badge.svg
-:target: http://unmaintained.tech/
-:alt: No Maintenance Intended 
+   :target: http://unmaintained.tech/
+   :alt: No Maintenance Intended 
 
 This is the code for the final master project "Integration of a free
 finite element method structural solver with an SPH code for the study
