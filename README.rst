@@ -7,6 +7,10 @@ README
 Overview
 --------
 
+.. image:: http://unmaintained.tech/badge.svg
+:target: http://unmaintained.tech/
+:alt: No Maintenance Intended 
+
 This is the code for the final master project "Integration of a free
 finite element method structural solver with an SPH code for the study
 of fluid-structure interaction".
@@ -19,6 +23,9 @@ of fluid-structure interaction".
 * ``report``: Code corresponding to the figures and results of the report
 * ``buildscripts``: Build scripts (conda recipes) to easily install the
   dependencies
+
+.. warning:: This code is unfinished and the project has been abandoned. Use
+  at your own risk.
 
 Requirements
 ------------
